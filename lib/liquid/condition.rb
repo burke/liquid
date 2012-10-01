@@ -44,6 +44,10 @@ module Liquid
       end
     end
 
+    def markup(tag_name)
+      "{% #{tag_name} #{left} #{operator} #{right} %}"
+    end
+
     def or(condition)
       @child_relation, @child_condition = :or, condition
     end
@@ -93,6 +97,7 @@ module Liquid
       return context[left] if op == nil
 
       left, right = context[left], context[right]
+      raise Thunked if left == Liquid::Thunk || right == Liquid::Thunk
 
       operation = self.class.operators[op] || raise(ArgumentError.new("Unknown operator #{op}"))
 
@@ -110,6 +115,10 @@ module Liquid
   class ElseCondition < Condition
     def else?
       true
+    end
+
+    def markup(tag_name)
+      "{% else %}"
     end
 
     def evaluate(context)

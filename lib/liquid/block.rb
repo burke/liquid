@@ -79,7 +79,11 @@ module Liquid
     end
 
     def render(context)
-      render_all(@nodelist, context)
+      begin
+        render_all(@nodelist, context)
+      rescue Thunked
+        require'pry';binding.pry
+      end
     end
 
     protected
@@ -89,6 +93,7 @@ module Liquid
     end
 
     def render_all(list, context)
+
       list.collect do |token|
         begin
           token.respond_to?(:render) ? token.render(context) : token

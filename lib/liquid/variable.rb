@@ -35,9 +35,9 @@ module Liquid
 
     def render(context)
       return '' if @name.nil?
-      root = context[@name]
-      return "{{#{@markup}}}" if root == Thunk
-      @filters.inject(root) do |output, filter|
+      return "{{#{@markup}}}" if context[@name] == Thunk
+
+      @filters.inject(context[@name]) do |output, filter|
         filterargs = filter[1].to_a.collect do |a|
           context[a]
         end

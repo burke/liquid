@@ -34,10 +34,27 @@ module Liquid
 
     def render(context)
       context.stack do
-        @blocks.each do |block|
-          if block.evaluate(context)
-            return render_all(block.attachment, context)
+        begin
+          @blocks.each do |block|
+            if block.evaluate(context)
+              return render_all(block.attachment, context)
+            end
           end
+        #rescue Condition::Thunked
+        #  output = ""
+        #  initial = true
+        #  @blocks.each do |block|
+        #    if initial
+        #      initial = false
+        #      tag_name = "if"
+        #    else
+        #      tag_name = "elseif"
+        #    end
+        #    output << block.markup(tag_name)
+        #    output << render_all(block.attachment, context)
+        #  end
+        #  output << "{% endif %}"
+          return output
         end
         ''
       end

@@ -26,9 +26,18 @@ module Liquid
 
     def render(context)
       output = super
-      context.scopes.last[@to] = output
-      ''
+      if any_thunks_in?(output)
+        context.scopes.last[@to] = Thunk
+        "{% capture #{@markup} %}#{output}{% endcapture %}"
+      else
+        context.scopes.last[@to] = output
+        ''
+      end
     end
+  end
+
+  def any_thunks_in?(output)
+    # how do we determine this? :(
   end
 
   Template.register_tag('capture', Capture)
